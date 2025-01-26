@@ -1,6 +1,5 @@
 const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
-const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-const BASE_URL = 'https://api.aviationstack.com/v1/flights';
+const BASE_URL = 'http://localhost:8080/https://api.aviationstack.com/v1/flights';
 
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
@@ -19,9 +18,8 @@ flightForm.addEventListener('submit', async (event) => {
   flightResults.innerHTML = '<p>Loading...</p>';
 
   try {
-    // Fetch flight data from AviationStack API using CORS Anywhere proxy
     const response = await fetch(
-      `${CORS_PROXY}${BASE_URL}?access_key=${API_KEY}&dep_iata=${depAirport}&arr_iata=${arrAirport}`
+      `${BASE_URL}?access_key=${API_KEY}&dep_iata=${depAirport}&arr_iata=${arrAirport}`
     );
     const data = await response.json();
 
