@@ -2,108 +2,35 @@ const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
 const BASE_URL = 'http://localhost:8081/https://api.aviationstack.com/v1/flights';
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
-const countryFilter = document.getElementById('countryFilter');
-const cityFilter = document.getElementById('cityFilter');
-const airlineFilter = document.getElementById('airlineFilter');
-
-let allFlights = []; // Store fetched flights
-let allCountries = []; // Store fetched countries
-let allCities = []; // Store fetched cities
-let allAirlines = []; // Store fetched airlines
-
-// Fetch and Populate Countries
-async function fetchCountries() {
-  try {
-    const response = await fetch(`${BASE_URL}/countries?access_key=${API_KEY}`);
-    const data = await response.json();
-    if (data && data.data) {
-      allCountries = data.data;
-      populateDropdown(countryFilter, allCountries.map(country => country.name));
-    }
-  } catch (error) {
-    console.error('Error fetching countries:', error);
-  }
-}
-
-// Fetch and Populate Cities for a Country
-async function fetchCities(country) {
-  try {
-    const response = await fetch(`${BASE_URL}/cities?access_key=${API_KEY}&country_name=${country}`);
-    const data = await response.json();
-    if (data && data.data) {
-      allCities = data.data;
-      populateDropdown(cityFilter, allCities.map(city => city.name));
-    }
-  } catch (error) {
-    console.error('Error fetching cities:', error);
-  }
-}
-
-// Fetch and Populate Airlines
-async function fetchAirlines() {
-  try {
-    const response = await fetch(`${BASE_URL}/airlines?access_key=${API_KEY}`);
-    const data = await response.json();
-    if (data && data.data) {
-      allAirlines = data.data;
-      populateDropdown(airlineFilter, allAirlines.map(airline => airline.name));
-    }
-  } catch (error) {
-    console.error('Error fetching airlines:', error);
-  }
-}
-
-// Populate a dropdown with options
-function populateDropdown(dropdown, items) {
-  dropdown.innerHTML = `<option value="">Choose an Option</option>`;
-  items.forEach(item => {
-    const option = document.createElement('option');
-    option.value = item;
-    option.textContent = item;
-    dropdown.appendChild(option);
-  });
-}
-
-// Event: Country selection changes
-countryFilter.addEventListener('change', () => {
-  const selectedCountry = countryFilter.value;
-  if (selectedCountry) {
-    fetchCities(selectedCountry);
-  } else {
-    cityFilter.innerHTML = '<option value="">Choose a City</option>';
-  }
-});
 
 // Handle form submission
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const selectedCountry = countryFilter.value;
-  const selectedCity = cityFilter.value;
-  const selectedAirline = airlineFilter.value;
+  // Get user input
+  const countryInput = document.getElementById('countryInput').value.trim();
+  const cityInput = document.getElementById('cityInput').value.trim();
+  const airlineInput = document.getElementById('airlineInput').value.trim();
 
-  if (!selectedCountry && !selectedCity && !selectedAirline) {
-    alert('Please select at least one search criterion.');
+  if (!countryInput && !cityInput && !airlineInput) {
+    alert('Please enter at least one search criterion.');
     return;
   }
 
   // Build query parameters
   let queryParams = [];
-  if (selectedCountry) queryParams.push(`dep_country=${selectedCountry}`);
-  if (selectedCity) queryParams.push(`dep_city=${selectedCity}`);
-  if (selectedAirline) queryParams.push(`airline_name=${selectedAirline}`);
+  if (countryInput) queryParams.push(`dep_country=${encodeURIComponent(countryInput)}`);
+  if (cityInput) queryParams.push(`dep_city=${encodeURIComponent(cityInput)}`);
+  if (airlineInput) queryParams.push(`airline_name=${encodeURIComponent(airlineInput)}`);
 
   // Fetch flight data
   flightResults.innerHTML = '<p>Loading...</p>';
-  allFlights = []; // Reset flights before fetching new ones
-
   try {
-    const response = await fetch(`${BASE_URL}/flights?access_key=${API_KEY}&${queryParams.join('&')}`);
+    const response = await fetch(`${BASE_URL}?access_key=${API_KEY}&${queryParams.join('&')}`);
     const data = await response.json();
 
     if (data.data && data.data.length > 0) {
-      allFlights = data.data; // Store flights for filtering
-      displayFlights(allFlights);
+      displayFlights(data.data);
     } else {
       flightResults.innerHTML = '<p class="text-danger">No flights found.</p>';
     }
@@ -133,7 +60,3 @@ function displayFlights(flights) {
       </div>`;
   }).join('');
 }
-
-// Fetch initial data
-fetchCountries();
-fetchAirlines();
