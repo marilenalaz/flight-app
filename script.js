@@ -1,5 +1,5 @@
 const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
-const BASE_URL = 'http://localhost:8080/https://api.aviationstack.com/v1/flights';
+const BASE_URL = 'http://localhost:8081/https://api.aviationstack.com/v1/flights';
 
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
