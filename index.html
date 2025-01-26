@@ -10,7 +10,7 @@
 <body>
   <header class="bg-primary text-white text-center py-5">
     <h1 class="display-4">Flight Search App</h1>
-    <p class="lead">Find real-time flight information for your favorite destinations.</p>
+    <p class="lead">Find real-time flight information by city, airport, country, or airline.</p>
   </header>
 
   <main class="container my-5">
@@ -18,35 +18,29 @@
     <form id="flightForm" class="mb-5">
       <div class="row g-3">
         <div class="col-md-6">
-          <label for="searchType" class="form-label">Search By</label>
-          <select id="searchType" class="form-select">
-            <option value="airport" selected>Airport Code</option>
-            <option value="city">City Name</option>
+          <label for="countryFilter" class="form-label">Select Country</label>
+          <select id="countryFilter" class="form-select">
+            <option value="">Choose a Country</option>
+            <!-- Country options will be populated dynamically -->
           </select>
         </div>
         <div class="col-md-6">
-          <label for="depSearch" class="form-label">Departure (Airport/City)</label>
-          <input id="depSearch" type="text" class="form-control" placeholder="Enter departure">
+          <label for="cityFilter" class="form-label">Select City</label>
+          <select id="cityFilter" class="form-select">
+            <option value="">Choose a City</option>
+            <!-- City options will be populated dynamically -->
+          </select>
         </div>
         <div class="col-md-6">
-          <label for="arrSearch" class="form-label">Arrival (Airport/City)</label>
-          <input id="arrSearch" type="text" class="form-control" placeholder="Enter arrival (optional)">
+          <label for="airlineFilter" class="form-label">Select Airline</label>
+          <select id="airlineFilter" class="form-select">
+            <option value="">Choose an Airline</option>
+            <!-- Airline options will be populated dynamically -->
+          </select>
         </div>
       </div>
       <button type="submit" class="btn btn-primary mt-4">Search Flights</button>
     </form>
-
-    <!-- Filters -->
-    <div class="mb-4">
-      <label for="statusFilter" class="form-label">Filter by Status</label>
-      <select id="statusFilter" class="form-select">
-        <option value="">All</option>
-        <option value="active">Active</option>
-        <option value="landed">Landed</option>
-        <option value="cancelled">Cancelled</option>
-        <option value="delayed">Delayed</option>
-      </select>
-    </div>
 
     <!-- Flight Results -->
     <h2 class="mb-4">Flight Results</h2>
@@ -54,7 +48,7 @@
   </main>
 
   <footer class="bg-dark text-white text-center py-3">
-    <p>Created by [Your Name] - Class Project 2025</p>
+    <p>Created by LazKar - Class Project 2025</p>
     <a href="history.html" class="btn btn-outline-light mt-2">View Search History</a>
   </footer>
 
