@@ -10,7 +10,7 @@
 <body>
   <header class="bg-primary text-white text-center py-5">
     <h1 class="display-4">Flight Search App</h1>
-    <p class="lead">Find real-time flight information by typing country, city, or airline names.</p>
+    <p class="lead">Find real-time flight information by entering airport codes.</p>
   </header>
 
   <main class="container my-5">
@@ -18,16 +18,12 @@
     <form id="flightForm" class="mb-5">
       <div class="row g-3">
         <div class="col-md-6">
-          <label for="countryInput" class="form-label">Country (optional)</label>
-          <input id="countryInput" type="text" class="form-control" placeholder="Enter a country">
+          <label for="depAirport" class="form-label">Departure Airport Code (e.g., LAX)</label>
+          <input id="depAirport" type="text" class="form-control" placeholder="Enter departure airport code" required>
         </div>
         <div class="col-md-6">
-          <label for="cityInput" class="form-label">City (optional)</label>
-          <input id="cityInput" type="text" class="form-control" placeholder="Enter a city">
-        </div>
-        <div class="col-md-6">
-          <label for="airlineInput" class="form-label">Airline (optional)</label>
-          <input id="airlineInput" type="text" class="form-control" placeholder="Enter an airline">
+          <label for="arrAirport" class="form-label">Arrival Airport Code (optional)</label>
+          <input id="arrAirport" type="text" class="form-control" placeholder="Enter arrival airport code">
         </div>
       </div>
       <button type="submit" class="btn btn-primary mt-4">Search Flights</button>

@@ -8,20 +8,19 @@ flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   // Get user input
-  const countryInput = document.getElementById('countryInput').value.trim();
-  const cityInput = document.getElementById('cityInput').value.trim();
-  const airlineInput = document.getElementById('airlineInput').value.trim();
+  const depAirport = document.getElementById('depAirport').value.trim();
+  const arrAirport = document.getElementById('arrAirport').value.trim();
 
-  if (!countryInput && !cityInput && !airlineInput) {
-    alert('Please enter at least one search criterion.');
+  if (!depAirport) {
+    alert('Please enter a departure airport code.');
     return;
   }
 
   // Build query parameters
-  let queryParams = [];
-  if (countryInput) queryParams.push(`dep_country=${encodeURIComponent(countryInput)}`);
-  if (cityInput) queryParams.push(`dep_city=${encodeURIComponent(cityInput)}`);
-  if (airlineInput) queryParams.push(`airline_name=${encodeURIComponent(airlineInput)}`);
+  let queryParams = [`dep_iata=${encodeURIComponent(depAirport)}`];
+  if (arrAirport) {
+    queryParams.push(`arr_iata=${encodeURIComponent(arrAirport)}`);
+  }
 
   // Fetch flight data
   flightResults.innerHTML = '<p>Loading...</p>';
@@ -51,9 +50,9 @@ function displayFlights(flights) {
       <div class="col-md-4">
         <div class="card ${statusClass}">
           <div class="card-body">
-            <h5>${flight.airline.name || 'Unknown Airline'} (${flight.flight.iata || 'N/A'})</h5>
-            <p><strong>Departure:</strong> ${flight.departure.airport || 'N/A'} (${flight.departure.iata || 'N/A'})</p>
-            <p><strong>Arrival:</strong> ${flight.arrival.airport || 'N/A'} (${flight.arrival.iata || 'N/A'})</p>
+            <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
+            <p><strong>Departure:</strong> ${flight.departure?.airport || 'N/A'} (${flight.departure?.iata || 'N/A'})</p>
+            <p><strong>Arrival:</strong> ${flight.arrival?.airport || 'N/A'} (${flight.arrival?.iata || 'N/A'})</p>
             <p><strong>Status:</strong> ${flight.flight_status || 'Unknown'}</p>
           </div>
         </div>
