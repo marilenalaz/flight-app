@@ -3,7 +3,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f9;
-  color: #333;
 }
 
 header {
@@ -22,14 +21,13 @@ form {
   border-radius: 8px;
 }
 
-form input {
+form label, form input, form button {
+  display: block;
   width: 100%;
-  padding: 0.5rem;
-  margin: 0.5rem 0;
+  margin-bottom: 1rem;
 }
 
 form button {
-  width: 100%;
   padding: 0.7rem;
   background-color: #0078d4;
   color: white;
@@ -42,28 +40,11 @@ form button:hover {
   background-color: #005bb5;
 }
 
-#loading {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #0078d4;
-}
-
-.flight {
-  margin-bottom: 1rem;
+#flightResults {
+  margin: 2rem auto;
   padding: 1rem;
+  max-width: 600px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-}
-
-.flight.active {
-  border-left: 5px solid #28a745; /* Green for active flights */
-}
-
-.flight.scheduled {
-  border-left: 5px solid #0078d4; /* Blue for scheduled flights */
-}
-
-.flight.cancelled {
-  border-left: 5px solid #dc3545; /* Red for cancelled flights */
 }
