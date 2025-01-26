@@ -1,8 +1,9 @@
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
 
+// Use CORS proxy with the AviationStack API
 const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
-const BASE_URL = 'https://api.aviationstack.com/v1/flights';
+const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.aviationstack.com/v1/flights';
 
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
