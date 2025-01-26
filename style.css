@@ -1,20 +1,174 @@
+/* General Styling */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
 }
 
 header {
   background: url('https://source.unsplash.com/1600x400/?airplane') no-repeat center center/cover;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-#flightResults .card {
-  transition: transform 0.2s ease-in-out;
-}
-
-#flightResults .card:hover {
-  transform: scale(1.05);
+h1, h2 {
+  font-weight: bold;
 }
 
 footer {
   background-color: #343a40;
   color: #ffffff;
+  padding: 1rem;
+}
+
+/* Form Styling */
+form {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+form input, form select, form button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+/* Flight Results */
+#flightResults {
+  margin-top: 2rem;
+}
+
+#flightResults .card {
+  border: none;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#flightResults .card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#flightResults .card.bg-success {
+  background-color: #28a745 !important;
+  color: white;
+}
+
+#flightResults .card.bg-danger {
+  background-color: #dc3545 !important;
+  color: white;
+}
+
+#flightResults .card.bg-warning {
+  background-color: #ffc107 !important;
+  color: black;
+}
+
+#flightResults .card-body {
+  padding: 1rem;
+}
+
+/* Status Filter */
+#statusFilter {
+  width: 50%;
+  margin: 1rem auto;
+}
+
+/* Collapsible Search History */
+table {
+  width: 100%;
+  text-align: left;
+}
+
+table th, table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #343a40;
+  color: white;
+  font-weight: bold;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #b52a3a;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  form, table {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  #statusFilter {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }

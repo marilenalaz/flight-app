@@ -18,27 +18,35 @@
     <form id="flightForm" class="mb-5">
       <div class="row g-3">
         <div class="col-md-6">
-          <label for="depAirport" class="form-label">Departure Airport Code (e.g., LAX)</label>
-          <input id="depAirport" type="text" class="form-control" placeholder="Enter departure airport" required>
+          <label for="searchType" class="form-label">Search By</label>
+          <select id="searchType" class="form-select">
+            <option value="airport" selected>Airport Code</option>
+            <option value="city">City Name</option>
+          </select>
         </div>
         <div class="col-md-6">
-          <label for="arrAirport" class="form-label">Arrival Airport Code (optional)</label>
-          <input id="arrAirport" type="text" class="form-control" placeholder="Enter arrival airport">
+          <label for="depSearch" class="form-label">Departure (Airport/City)</label>
+          <input id="depSearch" type="text" class="form-control" placeholder="Enter departure">
+        </div>
+        <div class="col-md-6">
+          <label for="arrSearch" class="form-label">Arrival (Airport/City)</label>
+          <input id="arrSearch" type="text" class="form-control" placeholder="Enter arrival (optional)">
         </div>
       </div>
       <button type="submit" class="btn btn-primary mt-4">Search Flights</button>
     </form>
 
-    <!-- Loading Spinner -->
-    <div id="loading" class="d-none text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+    <!-- Filters -->
+    <div class="mb-4">
+      <label for="statusFilter" class="form-label">Filter by Status</label>
+      <select id="statusFilter" class="form-select">
+        <option value="">All</option>
+        <option value="active">Active</option>
+        <option value="landed">Landed</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="delayed">Delayed</option>
+      </select>
     </div>
-
-    <!-- Search History -->
-    <h2 class="mb-4">Search History</h2>
-    <ul id="searchHistory" class="list-group mb-5"></ul>
 
     <!-- Flight Results -->
     <h2 class="mb-4">Flight Results</h2>
@@ -47,6 +55,7 @@
 
   <footer class="bg-dark text-white text-center py-3">
     <p>Created by [Your Name] - Class Project 2025</p>
+    <a href="history.html" class="btn btn-outline-light mt-2">View Search History</a>
   </footer>
 
   <script src="script.js"></script>
