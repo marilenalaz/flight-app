@@ -1,4 +1,6 @@
 {
+  "name": "your-app",
+  "version": "1.0.0",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -9,5 +11,10 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+  },
+  "scripts": {
+    "build": "echo 'No build required for this app'",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   }
 }
