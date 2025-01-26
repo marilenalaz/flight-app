@@ -3,26 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flight Search App</title>
+  <title>Advanced Flight Search App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Flight Search App</h1>
-    <nav>
-      <a href="profile.html">My Profile</a>
-    </nav>
+    <h1>Advanced Flight Search App</h1>
   </header>
   <main>
     <form id="flightForm">
-      <label for="depAirport">Departure Airport:</label>
-      <input id="depAirport" type="text" placeholder="Enter code (e.g., LAX)" required>
-
-      <label for="arrAirport">Arrival Airport:</label>
-      <input id="arrAirport" type="text" placeholder="Enter code (optional)">
-
+      <label for="depAirport">Departure Airport Code (e.g., LAX):</label>
+      <input id="depAirport" type="text" placeholder="Departure Airport Code" required>
+      
+      <label for="arrAirport">Arrival Airport Code (optional):</label>
+      <input id="arrAirport" type="text" placeholder="Arrival Airport Code">
+      
       <button type="submit">Search Flights</button>
     </form>
+    <div id="loading" style="display: none;">Loading...</div>
     <section id="flightResults"></section>
   </main>
   <footer>
