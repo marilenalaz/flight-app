@@ -92,6 +92,17 @@ form button:hover {
   padding: 1rem;
 }
 
+/* Watchlist Page */
+#watchlistResults .card {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#watchlistResults .card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Pagination */
 .pagination-container {
   text-align: center;
@@ -102,6 +113,59 @@ form button:hover {
   min-width: 40px;
   padding: 5px 10px;
   margin: 0 5px;
+}
+
+/* Bookmark Button */
+.bookmark-btn {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bookmark-btn:hover {
+  background-color: #e0a800;
+  color: white;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #b52a3a;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-outline-light {
+  border: 1px solid white;
+  color: white;
+}
+
+.btn-outline-light:hover {
+  background-color: white;
+  color: black;
 }
 
 /* Responsive Design */
@@ -115,10 +179,23 @@ form button:hover {
     width: 100%;
     padding: 0 1rem;
   }
+
+  #statusFilter {
+    width: 100%;
+  }
+
+  .pagination-container {
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 576px) {
   .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .bookmark-btn {
     width: 100%;
     margin-bottom: 0.5rem;
   }

@@ -27,6 +27,16 @@
           </select>
         </div>
         <div class="col-md-6">
+          <label for="statusFilter" class="form-label">Filter by Status</label>
+          <select id="statusFilter" class="form-select">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="landed">Landed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="col-md-6">
           <label for="depSearch" class="form-label">Departure (Airport/City/Country)</label>
           <input id="depSearch" type="text" class="form-control" placeholder="Enter departure">
         </div>
@@ -50,6 +60,7 @@
   <footer class="bg-dark text-white text-center py-3">
     <p>Created by [Your Name] - Class Project 2025</p>
     <a href="history.html" class="btn btn-outline-light mt-2">View Search History</a>
+    <a href="watchlist.html" class="btn btn-outline-light mt-2">View Watchlist</a>
   </footer>
 
   <script src="script.js"></script>
