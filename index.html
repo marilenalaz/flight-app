@@ -38,6 +38,18 @@
           <label for="airlineSearch" class="form-label">Airline (optional)</label>
           <input id="airlineSearch" type="text" class="form-control" placeholder="Enter airline name">
         </div>
+        <div class="col-md-6">
+          <label for="flightNumber" class="form-label">Flight Number (optional)</label>
+          <input id="flightNumber" type="text" class="form-control" placeholder="Enter flight number">
+        </div>
+        <div class="col-md-6">
+          <label for="dateFrom" class="form-label">Date From</label>
+          <input id="dateFrom" type="date" class="form-control">
+        </div>
+        <div class="col-md-6">
+          <label for="dateTo" class="form-label">Date To</label>
+          <input id="dateTo" type="date" class="form-control">
+        </div>
       </div>
       <button type="submit" class="btn btn-primary mt-4">Search Flights</button>
     </form>
@@ -46,13 +58,15 @@
     <section id="resultsSection" class="mt-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Flight Results</h2>
-        <select id="statusFilter" class="form-select" style="width: 200px;">
-          <option value="">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="scheduled">Scheduled</option>
-          <option value="landed">Landed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+        <div class="d-flex gap-3">
+          <select id="sortOptions" class="form-select">
+            <option value="">Sort By</option>
+            <option value="departure-asc">Departure Time (Ascending)</option>
+            <option value="departure-desc">Departure Time (Descending)</option>
+            <option value="arrival-asc">Arrival Time (Ascending)</option>
+            <option value="arrival-desc">Arrival Time (Descending)</option>
+          </select>
+        </div>
       </div>
       <div id="flightResults" class="row g-4"></div>
     </section>

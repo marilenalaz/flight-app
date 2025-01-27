@@ -2,37 +2,47 @@ const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
 const BASE_URL = 'http://localhost:8081/https://api.aviationstack.com/v1/flights';
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
-const statusFilter = document.getElementById('statusFilter');
+const sortOptions = document.getElementById('sortOptions');
 const paginationContainer = document.createElement('div');
 paginationContainer.classList.add('pagination-container');
 document.querySelector('main').appendChild(paginationContainer);
 
 let allFlights = []; // Store fetched flights
 let filteredFlights = []; // Filtered flights
-let currentPage = 1;
-const resultsPerPage = 9;
+let currentPage = 1; // Current page for pagination
+const resultsPerPage = 9; // Number of results per page
 
 // Handle form submission
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  // Collect user input
   const searchType = document.getElementById('searchType').value;
   const depSearch = document.getElementById('depSearch').value.trim();
   const arrSearch = document.getElementById('arrSearch').value.trim();
   const airlineSearch = document.getElementById('airlineSearch').value.trim();
+  const flightNumber = document.getElementById('flightNumber').value.trim();
+  const dateFrom = document.getElementById('dateFrom').value.trim();
+  const dateTo = document.getElementById('dateTo').value.trim();
 
-  if (!depSearch && !arrSearch && !airlineSearch) {
+  // Validate input
+  if (!depSearch && !arrSearch && !airlineSearch && !flightNumber) {
     alert('Please enter at least one search criterion.');
     return;
   }
 
+  // Build query parameters
   let queryParams = [];
   if (searchType === 'city') queryParams.push(`dep_city=${depSearch}`);
   else if (searchType === 'country') queryParams.push(`dep_country=${depSearch}`);
   else if (searchType === 'airline' || airlineSearch) queryParams.push(`airline_name=${airlineSearch}`);
   else queryParams.push(`dep_iata=${depSearch}`);
   if (arrSearch) queryParams.push(`arr_iata=${arrSearch}`);
+  if (flightNumber) queryParams.push(`flight_iata=${flightNumber}`);
+  if (dateFrom) queryParams.push(`flight_date=${dateFrom}`);
+  if (dateTo) queryParams.push(`flight_date=${dateTo}`); // Additional date filter logic
 
+  // Fetch data
   flightResults.innerHTML = '<p>Loading...</p>';
   paginationContainer.innerHTML = '';
   currentPage = 1;
@@ -93,17 +103,6 @@ function displayFlights() {
   renderPagination(filteredFlights);
 }
 
-// Filter flights by status
-statusFilter.addEventListener('change', () => {
-  const selectedStatus = statusFilter.value;
-  filteredFlights = selectedStatus
-    ? allFlights.filter((flight) => flight.flight_status === selectedStatus)
-    : allFlights;
-
-  currentPage = 1; // Reset to the first page
-  displayFlights();
-});
-
 // Render pagination controls
 function renderPagination(filteredFlights) {
   const totalPages = Math.ceil(filteredFlights.length / resultsPerPage);
@@ -125,3 +124,30 @@ function renderPagination(filteredFlights) {
     });
   });
 }
+
+// Handle sorting
+sortOptions.addEventListener('change', () => {
+  const sortValue = sortOptions.value;
+
+  filteredFlights.sort((a, b) => {
+    const depA = new Date(a.departure?.scheduled || 0).getTime();
+    const depB = new Date(b.departure?.scheduled || 0).getTime();
+    const arrA = new Date(a.arrival?.scheduled || 0).getTime();
+    const arrB = new Date(b.arrival?.scheduled || 0).getTime();
+
+    if (sortValue === 'departure-asc') {
+      return depA - depB; // Ascending departure time
+    } else if (sortValue === 'departure-desc') {
+      return depB - depA; // Descending departure time
+    } else if (sortValue === 'arrival-asc') {
+      return arrA - arrB; // Ascending arrival time
+    } else if (sortValue === 'arrival-desc') {
+      return arrB - arrA; // Descending arrival time
+    } else {
+      return 0; // No sorting
+    }
+  });
+
+  currentPage = 1; // Reset to the first page after sorting
+  displayFlights();
+});
