@@ -92,61 +92,16 @@ form button:hover {
   padding: 1rem;
 }
 
-/* Status Filter */
-#statusFilter {
-  width: 50%;
-  margin: 1rem auto;
+/* Pagination */
+.pagination-container {
+  text-align: center;
+  margin-top: 20px;
 }
 
-/* Collapsible Search History */
-table {
-  width: 100%;
-  text-align: left;
-}
-
-table th, table td {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-}
-
-table th {
-  background-color: #343a40;
-  color: white;
-  font-weight: bold;
-}
-
-table tbody tr:nth-child(odd) {
-  background-color: #f8f9fa;
-}
-
-table tbody tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Buttons */
-.btn {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #b52a3a;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
+.pagination-container .btn {
+  min-width: 40px;
+  padding: 5px 10px;
+  margin: 0 5px;
 }
 
 /* Responsive Design */
@@ -159,10 +114,6 @@ table tbody tr:hover {
   form, table {
     width: 100%;
     padding: 0 1rem;
-  }
-
-  #statusFilter {
-    width: 100%;
   }
 }
 
