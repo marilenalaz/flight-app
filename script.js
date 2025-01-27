@@ -7,16 +7,19 @@ const paginationContainer = document.createElement('div');
 paginationContainer.classList.add('pagination-container');
 document.querySelector('main').appendChild(paginationContainer);
 
+// Initialize Flatpickr for date inputs
+flatpickr('#dateFrom', { dateFormat: 'Y-m-d' });
+flatpickr('#dateTo', { dateFormat: 'Y-m-d' });
+
 let allFlights = []; // Store fetched flights
 let filteredFlights = []; // Filtered flights
-let currentPage = 1; // Current page for pagination
+let currentPage = 1;
 const resultsPerPage = 9; // Number of results per page
 
 // Handle form submission
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  // Collect user input
   const searchType = document.getElementById('searchType').value;
   const depSearch = document.getElementById('depSearch').value.trim();
   const arrSearch = document.getElementById('arrSearch').value.trim();
@@ -25,7 +28,6 @@ flightForm.addEventListener('submit', async (event) => {
   const dateFrom = document.getElementById('dateFrom').value.trim();
   const dateTo = document.getElementById('dateTo').value.trim();
 
-  // Validate input
   if (!depSearch && !arrSearch && !airlineSearch && !flightNumber) {
     alert('Please enter at least one search criterion.');
     return;
@@ -39,10 +41,9 @@ flightForm.addEventListener('submit', async (event) => {
   else queryParams.push(`dep_iata=${depSearch}`);
   if (arrSearch) queryParams.push(`arr_iata=${arrSearch}`);
   if (flightNumber) queryParams.push(`flight_iata=${flightNumber}`);
-  if (dateFrom) queryParams.push(`flight_date=${dateFrom}`);
-  if (dateTo) queryParams.push(`flight_date=${dateTo}`); // Additional date filter logic
+  if (dateFrom) queryParams.push(`flight_date_from=${dateFrom}`);
+  if (dateTo) queryParams.push(`flight_date_to=${dateTo}`);
 
-  // Fetch data
   flightResults.innerHTML = '<p>Loading...</p>';
   paginationContainer.innerHTML = '';
   currentPage = 1;
