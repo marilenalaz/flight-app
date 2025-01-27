@@ -8,9 +8,9 @@ paginationContainer.classList.add('pagination-container');
 document.querySelector('main').appendChild(paginationContainer);
 
 let allFlights = []; // Store fetched flights
+let filteredFlights = []; // Filtered flights
 let currentPage = 1;
 const resultsPerPage = 9;
-const watchlist = JSON.parse(localStorage.getItem('watchlist')) || []; // Load watchlist from localStorage
 
 // Handle form submission
 flightForm.addEventListener('submit', async (event) => {
@@ -43,6 +43,7 @@ flightForm.addEventListener('submit', async (event) => {
 
     if (data.data && data.data.length > 0) {
       allFlights = data.data;
+      filteredFlights = allFlights; // Initialize filtered flights
       displayFlights();
     } else {
       flightResults.innerHTML = '<p class="text-danger">No flights found.</p>';
@@ -52,15 +53,11 @@ flightForm.addEventListener('submit', async (event) => {
   }
 });
 
-// Display flights with status filter
+// Display flights
 function displayFlights() {
-  const selectedStatus = statusFilter.value;
-  const filteredFlights = selectedStatus
-    ? allFlights.filter((flight) => flight.flight_status === selectedStatus)
-    : allFlights;
-
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
+
   const flightsToShow = filteredFlights.slice(startIndex, endIndex);
 
   flightResults.innerHTML = flightsToShow.map((flight) => {
@@ -88,9 +85,6 @@ function displayFlights() {
             <p><strong>Departure Time:</strong> ${departureTime}</p>
             <p><strong>Arrival Time:</strong> ${arrivalTime}</p>
             <p><strong>Status:</strong> ${flight.flight_status || 'Unknown'}</p>
-            <button class="bookmark-btn" onclick="addToWatchlist(${JSON.stringify(flight).replace(/"/g, '&quot;')})">
-              Add to Watchlist
-            </button>
           </div>
         </div>
       </div>`;
@@ -99,16 +93,21 @@ function displayFlights() {
   renderPagination(filteredFlights);
 }
 
-// Add flight to watchlist
-function addToWatchlist(flight) {
-  watchlist.push(flight);
-  localStorage.setItem('watchlist', JSON.stringify(watchlist));
-  alert('Flight added to watchlist!');
-}
+// Filter flights by status
+statusFilter.addEventListener('change', () => {
+  const selectedStatus = statusFilter.value;
+  filteredFlights = selectedStatus
+    ? allFlights.filter((flight) => flight.flight_status === selectedStatus)
+    : allFlights;
 
-// Render pagination
+  currentPage = 1; // Reset to the first page
+  displayFlights();
+});
+
+// Render pagination controls
 function renderPagination(filteredFlights) {
   const totalPages = Math.ceil(filteredFlights.length / resultsPerPage);
+
   let paginationHTML = '';
   for (let i = 1; i <= totalPages; i++) {
     paginationHTML += `
