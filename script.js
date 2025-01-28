@@ -1,5 +1,12 @@
 const API_KEY = 'a4e675fa9fd444aa6912f163830faed9';
 const BASE_URL = 'http://localhost:8081/https://api.aviationstack.com/v1/flights';
+
+// Azure Table Storage Configuration
+const STORAGE_ACCOUNT_NAME = "flightappsearchstorage";
+const TABLE_URL = `https://${STORAGE_ACCOUNT_NAME}.table.core.windows.net`;
+const API_VERSION = "2020-12-06"; // Azure API Version
+const SAS_TOKEN = "sv=2022-11-02&ss=t&srt=o&sp=rwlau&se=2025-03-17T21:28:49Z&st=2025-01-28T13:28:49Z&spr=https&sig=CGJsVENZIHzlm9ATRrOVX%2BHgBxTWCxPqDy%2F3cu7mIH4%3D"; // Replace with your actual SAS token
+
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
 const sortOptions = document.getElementById('sortOptions');
@@ -7,14 +14,13 @@ const paginationContainer = document.createElement('div');
 paginationContainer.classList.add('pagination-container');
 document.querySelector('main').appendChild(paginationContainer);
 
-// Initialize Flatpickr for date inputs
 flatpickr('#dateFrom', { dateFormat: 'Y-m-d' });
 flatpickr('#dateTo', { dateFormat: 'Y-m-d' });
 
-let allFlights = []; // Store fetched flights
-let filteredFlights = []; // Filtered flights
+let allFlights = [];
+let filteredFlights = [];
 let currentPage = 1;
-const resultsPerPage = 9; // Number of results per page
+const resultsPerPage = 9;
 
 // Handle form submission
 flightForm.addEventListener('submit', async (event) => {
@@ -33,7 +39,6 @@ flightForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  // Build query parameters
   let queryParams = [];
   if (searchType === 'city') queryParams.push(`dep_city=${depSearch}`);
   else if (searchType === 'country') queryParams.push(`dep_country=${depSearch}`);
@@ -54,7 +59,8 @@ flightForm.addEventListener('submit', async (event) => {
 
     if (data.data && data.data.length > 0) {
       allFlights = data.data;
-      filteredFlights = allFlights; // Initialize filtered flights
+      filteredFlights = allFlights;
+      saveSearchHistory("testUser123", queryParams.join('&')); // Save search history to Azure
       displayFlights();
     } else {
       flightResults.innerHTML = '<p class="text-danger">No flights found.</p>';
@@ -64,7 +70,91 @@ flightForm.addEventListener('submit', async (event) => {
   }
 });
 
-// Display flights
+// **Save Search History to Azure Table Storage**
+async function saveSearchHistory(userId, searchData) {
+  const rowKey = new Date().toISOString();
+  const url = `${TABLE_URL}/SearchHistory?${SAS_TOKEN}`;
+
+  const body = {
+    PartitionKey: userId,
+    RowKey: rowKey,
+    searchData: searchData,
+  };
+
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-ms-version": API_VERSION,
+      "x-ms-date": new Date().toUTCString(),
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+// **Load Search History from Azure**
+async function loadSearchHistory(userId) {
+  const url = `${TABLE_URL}/SearchHistory?${SAS_TOKEN}&$filter=PartitionKey eq '${userId}'`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "x-ms-version": API_VERSION,
+      "x-ms-date": new Date().toUTCString(),
+      "Accept": "application/json",
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log("Search History:", data.value);
+  }
+}
+
+// **Save Flight to Watchlist**
+async function saveToWatchlist(userId, flight) {
+  const rowKey = flight.flight_iata || new Date().toISOString();
+  const url = `${TABLE_URL}/Watchlist?${SAS_TOKEN}`;
+
+  const body = {
+    PartitionKey: userId,
+    RowKey: rowKey,
+    flightData: JSON.stringify(flight),
+  };
+
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-ms-version": API_VERSION,
+      "x-ms-date": new Date().toUTCString(),
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+// **Load Watchlist from Azure**
+async function loadWatchlist(userId) {
+  const url = `${TABLE_URL}/Watchlist?${SAS_TOKEN}&$filter=PartitionKey eq '${userId}'`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "x-ms-version": API_VERSION,
+      "x-ms-date": new Date().toUTCString(),
+      "Accept": "application/json",
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log("Watchlist:", data.value);
+  }
+}
+
+// **Display Flights**
 function displayFlights() {
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
@@ -103,52 +193,3 @@ function displayFlights() {
 
   renderPagination(filteredFlights);
 }
-
-// Render pagination controls
-function renderPagination(filteredFlights) {
-  const totalPages = Math.ceil(filteredFlights.length / resultsPerPage);
-
-  let paginationHTML = '';
-  for (let i = 1; i <= totalPages; i++) {
-    paginationHTML += `
-      <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-light'} mx-1" data-page="${i}">
-        ${i}
-      </button>`;
-  }
-
-  paginationContainer.innerHTML = paginationHTML;
-
-  paginationContainer.querySelectorAll('button').forEach((button) => {
-    button.addEventListener('click', () => {
-      currentPage = Number(button.dataset.page);
-      displayFlights();
-    });
-  });
-}
-
-// Handle sorting
-sortOptions.addEventListener('change', () => {
-  const sortValue = sortOptions.value;
-
-  filteredFlights.sort((a, b) => {
-    const depA = new Date(a.departure?.scheduled || 0).getTime();
-    const depB = new Date(b.departure?.scheduled || 0).getTime();
-    const arrA = new Date(a.arrival?.scheduled || 0).getTime();
-    const arrB = new Date(b.arrival?.scheduled || 0).getTime();
-
-    if (sortValue === 'departure-asc') {
-      return depA - depB; // Ascending departure time
-    } else if (sortValue === 'departure-desc') {
-      return depB - depA; // Descending departure time
-    } else if (sortValue === 'arrival-asc') {
-      return arrA - arrB; // Ascending arrival time
-    } else if (sortValue === 'arrival-desc') {
-      return arrB - arrA; // Descending arrival time
-    } else {
-      return 0; // No sorting
-    }
-  });
-
-  currentPage = 1; // Reset to the first page after sorting
-  displayFlights();
-});
