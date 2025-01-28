@@ -25,15 +25,49 @@
     const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
     const watchlistResults = document.getElementById('watchlistResults');
 
-    watchlistResults.innerHTML = watchlist.map((flight, index) => `
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
-            <button class="btn btn-danger mt-2" onclick="removeFromWatchlist(${index})">❌ Remove</button>
-          </div>
-        </div>
-      </div>`).join('');
+    if (watchlist.length === 0) {
+      watchlistResults.innerHTML = '<p class="text-center">No flights in watchlist.</p>';
+    } else {
+      let output = '<div class="row">';
+
+      watchlist.forEach((flight, index) => {
+        const statusClass = {
+          cancelled: 'bg-danger text-white',
+          landed: 'bg-success text-white',
+          active: 'bg-warning text-dark',
+          scheduled: '',
+        }[flight.flight_status] || '';
+
+        const departureTime = flight.departure?.scheduled
+          ? new Date(flight.departure.scheduled).toLocaleString()
+          : 'N/A';
+        const arrivalTime = flight.arrival?.scheduled
+          ? new Date(flight.arrival.scheduled).toLocaleString()
+          : 'N/A';
+
+        output += `
+          <div class="col-md-4">
+            <div class="card ${statusClass}">
+              <div class="card-body">
+                <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
+                <p><strong>Departure:</strong> ${flight.departure?.airport || 'N/A'} (${flight.departure?.iata || 'N/A'})</p>
+                <p><strong>Arrival:</strong> ${flight.arrival?.airport || 'N/A'} (${flight.arrival?.iata || 'N/A'})</p>
+                <p><strong>Departure Time:</strong> ${departureTime}</p>
+                <p><strong>Arrival Time:</strong> ${arrivalTime}</p>
+                <p><strong>Status:</strong> ${flight.flight_status || 'Unknown'}</p>
+                <button class="btn btn-danger mt-2" onclick="removeFromWatchlist(${index})">❌ Remove</button>
+              </div>
+            </div>
+          </div>`;
+
+        if ((index + 1) % 3 === 0) {
+          output += '</div><div class="row">';
+        }
+      });
+
+      output += '</div>';
+      watchlistResults.innerHTML = output;
+    }
 
     function removeFromWatchlist(index) {
       watchlist.splice(index, 1);

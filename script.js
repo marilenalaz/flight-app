@@ -14,10 +14,10 @@ flatpickr('#dateTo', { dateFormat: 'Y-m-d' });
 let allFlights = []; // Store fetched flights
 let filteredFlights = []; // Filtered flights
 let currentPage = 1;
-const resultsPerPage = 9;
+const resultsPerPage = 9; // Display 9 results per page (3x3 layout)
 let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
 
-// Handle form submission
+// **Handle Form Submission**
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
@@ -34,7 +34,7 @@ flightForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  // Build query parameters
+  // Build API query parameters
   let queryParams = [];
   if (searchType === 'city') queryParams.push(`dep_city=${depSearch}`);
   else if (searchType === 'country') queryParams.push(`dep_country=${depSearch}`);
@@ -65,7 +65,7 @@ flightForm.addEventListener('submit', async (event) => {
   }
 });
 
-// **Display Flights in a 3x3 Grid**
+// **Display Flights (3x3 Grid)**
 function displayFlights() {
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
@@ -116,6 +116,14 @@ function displayFlights() {
 // **Save to Watchlist (Local Storage)**
 function addToWatchlist(index) {
   const flight = filteredFlights[index];
+
+  // Avoid duplicates
+  const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+  if (watchlist.some(watch => watch.flight?.iata === flight.flight?.iata)) {
+    alert("⚠️ This flight is already in your watchlist!");
+    return;
+  }
+
   watchlist.push(flight);
   localStorage.setItem('watchlist', JSON.stringify(watchlist));
   alert("✅ Flight added to Watchlist!");
@@ -148,3 +156,30 @@ function renderPagination(filteredFlights) {
     });
   });
 }
+
+// **Sorting Flights**
+sortOptions.addEventListener('change', () => {
+  const sortValue = sortOptions.value;
+
+  filteredFlights.sort((a, b) => {
+    const depA = new Date(a.departure?.scheduled || 0).getTime();
+    const depB = new Date(b.departure?.scheduled || 0).getTime();
+    const arrA = new Date(a.arrival?.scheduled || 0).getTime();
+    const arrB = new Date(b.arrival?.scheduled || 0).getTime();
+
+    if (sortValue === 'departure-asc') {
+      return depA - depB;
+    } else if (sortValue === 'departure-desc') {
+      return depB - depA;
+    } else if (sortValue === 'arrival-asc') {
+      return arrA - arrB;
+    } else if (sortValue === 'arrival-desc') {
+      return arrB - arrA;
+    } else {
+      return 0;
+    }
+  });
+
+  currentPage = 1;
+  displayFlights();
+});
