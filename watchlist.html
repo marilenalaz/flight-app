@@ -25,23 +25,15 @@
     const watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
     const watchlistResults = document.getElementById('watchlistResults');
 
-    if (watchlist.length === 0) {
-      watchlistResults.innerHTML = '<p>No flights in watchlist.</p>';
-    } else {
-      watchlistResults.innerHTML = watchlist.map((flight, index) => `
-        <div class="col-md-4">
-          <div class="card">
-            <div class="card-body">
-              <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
-              <p><strong>Departure:</strong> ${flight.departure?.airport || 'N/A'} (${flight.departure?.iata || 'N/A'})</p>
-              <p><strong>Arrival:</strong> ${flight.arrival?.airport || 'N/A'} (${flight.arrival?.iata || 'N/A'})</p>
-              <p><strong>Status:</strong> ${flight.flight_status || 'Unknown'}</p>
-              <button class="btn btn-danger" onclick="removeFromWatchlist(${index})">Remove</button>
-            </div>
+    watchlistResults.innerHTML = watchlist.map((flight, index) => `
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
+            <button class="btn btn-danger mt-2" onclick="removeFromWatchlist(${index})">❌ Remove</button>
           </div>
         </div>
-      `).join('');
-    }
+      </div>`).join('');
 
     function removeFromWatchlist(index) {
       watchlist.splice(index, 1);
