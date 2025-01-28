@@ -4,8 +4,8 @@ const BASE_URL = 'http://localhost:8081/https://api.aviationstack.com/v1/flights
 // Azure Table Storage Configuration
 const STORAGE_ACCOUNT_NAME = "flightappsearchstorage";
 const TABLE_URL = `https://${STORAGE_ACCOUNT_NAME}.table.core.windows.net`;
-const API_VERSION = "2020-12-06"; // Azure API Version
-const SAS_TOKEN = "sv=2022-11-02&ss=t&srt=o&sp=rwlau&se=2025-03-17T21:28:49Z&st=2025-01-28T13:28:49Z&spr=https&sig=CGJsVENZIHzlm9ATRrOVX%2BHgBxTWCxPqDy%2F3cu7mIH4%3D"; 
+const API_VERSION = "2020-12-06";
+const SAS_TOKEN = "sv=2022-11-02&ss=t&srt=o&sp=rwlau&se=2025-03-17T21:28:49Z&st=2025-01-28T13:28:49Z&spr=https&sig=CGJsVENZIHzlm9ATRrOVX%2BHgBxTWCxPqDy%2F3cu7mIH4%3D";
 
 const flightForm = document.getElementById('flightForm');
 const flightResults = document.getElementById('flightResults');
@@ -26,7 +26,6 @@ const resultsPerPage = 9;
 flightForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const searchType = document.getElementById('searchType').value;
   const depSearch = document.getElementById('depSearch').value.trim();
   const arrSearch = document.getElementById('arrSearch').value.trim();
   const airlineSearch = document.getElementById('airlineSearch').value.trim();
@@ -40,11 +39,9 @@ flightForm.addEventListener('submit', async (event) => {
   }
 
   let queryParams = [];
-  if (searchType === 'city') queryParams.push(`dep_city=${depSearch}`);
-  else if (searchType === 'country') queryParams.push(`dep_country=${depSearch}`);
-  else if (searchType === 'airline' || airlineSearch) queryParams.push(`airline_name=${airlineSearch}`);
-  else queryParams.push(`dep_iata=${depSearch}`);
+  if (depSearch) queryParams.push(`dep_iata=${depSearch}`);
   if (arrSearch) queryParams.push(`arr_iata=${arrSearch}`);
+  if (airlineSearch) queryParams.push(`airline_name=${airlineSearch}`);
   if (flightNumber) queryParams.push(`flight_iata=${flightNumber}`);
   if (dateFrom) queryParams.push(`flight_date_from=${dateFrom}`);
   if (dateTo) queryParams.push(`flight_date_to=${dateTo}`);
@@ -60,7 +57,7 @@ flightForm.addEventListener('submit', async (event) => {
     if (data.data && data.data.length > 0) {
       allFlights = data.data;
       filteredFlights = allFlights;
-      saveSearchHistory("testUser123", queryParams.join('&')); // Save search history to Azure
+      saveSearchHistory("testUser123", queryParams.join('&'));
       displayFlights();
     } else {
       flightResults.innerHTML = '<p class="text-danger">No flights found.</p>';
@@ -70,10 +67,10 @@ flightForm.addEventListener('submit', async (event) => {
   }
 });
 
-// **Save Search History to Azure Table Storage**
+// **Save Search History to Azure**
 async function saveSearchHistory(userId, searchData) {
   const rowKey = new Date().toISOString();
-  const url = `${TABLE_URL}/SearchHistory?${SAS_TOKEN}`;
+  const url = `${TABLE_URL}/SearchHistory()?${SAS_TOKEN}`;
 
   const body = {
     PartitionKey: userId,
@@ -91,6 +88,31 @@ async function saveSearchHistory(userId, searchData) {
     },
     body: JSON.stringify(body),
   });
+}
+
+// **Save Flight to Watchlist**
+async function saveToWatchlist(userId, flight) {
+  const rowKey = flight.flight?.iata || new Date().toISOString();
+  const url = `${TABLE_URL}/Watchlist()?${SAS_TOKEN}`;
+
+  const body = {
+    PartitionKey: userId,
+    RowKey: rowKey,
+    flightData: JSON.stringify(flight),
+  };
+
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-ms-version": API_VERSION,
+      "x-ms-date": new Date().toUTCString(),
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  alert("✅ Flight added to watchlist!");
 }
 
 // **Display Flights in a 3x3 Grid**
@@ -126,6 +148,9 @@ function displayFlights() {
             <p><strong>Departure Time:</strong> ${departureTime}</p>
             <p><strong>Arrival Time:</strong> ${arrivalTime}</p>
             <p><strong>Status:</strong> ${flight.flight_status || 'Unknown'}</p>
+            <button class="btn btn-primary mt-2" onclick="saveToWatchlist('testUser123', ${JSON.stringify(flight)})">
+              ⭐ Add to Watchlist
+            </button>
           </div>
         </div>
       </div>`;
