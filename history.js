@@ -1,7 +1,7 @@
-const STORAGE_ACCOUNT_NAME = "flightappsearchstorage"; // Your Storage Account Name
+const STORAGE_ACCOUNT_NAME = "flightappsearchstorage"; 
 const TABLE_URL = `https://${STORAGE_ACCOUNT_NAME}.table.core.windows.net`;
 const API_VERSION = "2020-12-06";
-const SAS_TOKEN = "sv=2022-11-02&ss=t&srt=o&sp=rwlau&se=2025-03-17T21:28:49Z&st=2025-01-28T13:28:49Z&spr=https&sig=CGJsVENZIHzlm9ATRrOVX%2BHgBxTWCxPqDy%2F3cu7mIH4%3D";
+const SAS_TOKEN = "sv=2022-11-02&ss=t&srt=o&sp=rwlau&se=2025-03-17T21:28:49Z&st=2025-01-28T13:28:49Z&spr=https&sig=CGJsVENZIHzlm9ATRrOVX%2BHgBxTWCxPqDy%2F3cu7mIH4%3D"; // Replace with new SAS token
 
 const historyBody = document.getElementById('historyBody');
 
