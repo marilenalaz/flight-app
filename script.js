@@ -93,75 +93,15 @@ async function saveSearchHistory(userId, searchData) {
   });
 }
 
-// **Load Search History from Azure**
-async function loadSearchHistory(userId) {
-  const url = `${TABLE_URL}/SearchHistory?${SAS_TOKEN}&$filter=PartitionKey eq '${userId}'`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "x-ms-version": API_VERSION,
-      "x-ms-date": new Date().toUTCString(),
-      "Accept": "application/json",
-    },
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    console.log("Search History:", data.value);
-  }
-}
-
-// **Save Flight to Watchlist**
-async function saveToWatchlist(userId, flight) {
-  const rowKey = flight.flight_iata || new Date().toISOString();
-  const url = `${TABLE_URL}/Watchlist?${SAS_TOKEN}`;
-
-  const body = {
-    PartitionKey: userId,
-    RowKey: rowKey,
-    flightData: JSON.stringify(flight),
-  };
-
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-ms-version": API_VERSION,
-      "x-ms-date": new Date().toUTCString(),
-      "Accept": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-}
-
-// **Load Watchlist from Azure**
-async function loadWatchlist(userId) {
-  const url = `${TABLE_URL}/Watchlist?${SAS_TOKEN}&$filter=PartitionKey eq '${userId}'`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "x-ms-version": API_VERSION,
-      "x-ms-date": new Date().toUTCString(),
-      "Accept": "application/json",
-    },
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    console.log("Watchlist:", data.value);
-  }
-}
-
-// **Display Flights**
+// **Display Flights in a 3x3 Grid**
 function displayFlights() {
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
-
   const flightsToShow = filteredFlights.slice(startIndex, endIndex);
 
-  flightResults.innerHTML = flightsToShow.map((flight) => {
+  let output = '<div class="row">';
+  
+  flightsToShow.forEach((flight, index) => {
     const statusClass = {
       cancelled: 'bg-danger text-white',
       landed: 'bg-success text-white',
@@ -176,8 +116,8 @@ function displayFlights() {
       ? new Date(flight.arrival.scheduled).toLocaleString()
       : 'N/A';
 
-    return `
-      <div class="col-md-4">
+    output += `
+      <div class="col-md-4 mb-4">
         <div class="card ${statusClass}">
           <div class="card-body">
             <h5>${flight.airline?.name || 'Unknown Airline'} (${flight.flight?.iata || 'N/A'})</h5>
@@ -189,7 +129,41 @@ function displayFlights() {
           </div>
         </div>
       </div>`;
-  }).join('');
 
+    if ((index + 1) % 3 === 0) {
+      output += '</div><div class="row">';
+    }
+  });
+
+  output += '</div>';
+  flightResults.innerHTML = output;
   renderPagination(filteredFlights);
+}
+
+// **Render Pagination**
+function renderPagination(filteredFlights) {
+  const totalPages = Math.ceil(filteredFlights.length / resultsPerPage);
+
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+
+  let paginationHTML = '<div class="pagination d-flex justify-content-center mt-3">';
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHTML += `
+      <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-light'} mx-1" data-page="${i}">
+        ${i}
+      </button>`;
+  }
+  paginationHTML += '</div>';
+
+  paginationContainer.innerHTML = paginationHTML;
+
+  paginationContainer.querySelectorAll('button').forEach((button) => {
+    button.addEventListener('click', () => {
+      currentPage = Number(button.dataset.page);
+      displayFlights();
+    });
+  });
 }
