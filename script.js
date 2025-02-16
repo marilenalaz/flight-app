@@ -14,7 +14,7 @@ flatpickr('#dateTo', { dateFormat: 'Y-m-d' });
 let allFlights = []; // Store fetched flights
 let filteredFlights = []; // Filtered flights
 let currentPage = 1;
-const resultsPerPage = 9; // Display 9 results per page (3x3 layout)
+const resultsPerPage = 16; // Display 9 results per page (4x4 layout)
 let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
 
 // **Handle Form Submission**
