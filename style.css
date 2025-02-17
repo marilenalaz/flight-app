@@ -54,7 +54,7 @@ form button {
 }
 
 form button:hover {
-  background-color: #770e3b;
+  background-color: #0056b3;
 }
 
 /* Flight Results */
@@ -74,7 +74,7 @@ form button:hover {
 }
 
 #flightResults .card.bg-success {
-  background-color: #28a745 !important;
+  background-color: #770e3b !important;
   color: white;
 }
 
